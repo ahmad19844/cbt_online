@@ -1,0 +1,48 @@
+<h1>My Dashboard</h1>
+
+<% if (inProgressAttemptId) { %>
+  <div class="alert alert-error">
+    You have an exam in progress.
+    <a href="/student/attempts/<%= inProgressAttemptId %>">Resume it now</a>.
+  </div>
+<% } %>
+
+<h2>Available Exams</h2>
+<% if (exams.length === 0) { %>
+  <p class="muted">No exams are available right now. Check back later.</p>
+<% } else { %>
+  <div class="exam-grid">
+    <% exams.forEach(e => { %>
+      <div class="card exam-card">
+        <h3><%= e.title %></h3>
+        <p class="muted"><%= e.subject_name %></p>
+        <p><%= e.num_questions %> questions &middot; <%= e.duration_minutes %> minutes &middot; Pass mark <%= e.pass_mark_percent %>%</p>
+        <p class="muted small">Attempts completed: <%= e.attempts_taken %></p>
+        <form method="POST" action="/student/exams/<%= e.id %>/start" onsubmit="return confirm('Start this exam now? The timer will begin immediately.');">
+          <button type="submit" class="btn btn-primary btn-block" <%= inProgressAttemptId ? 'disabled' : '' %>>Start Exam</button>
+        </form>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
+
+<h2>My Recent Results</h2>
+<% if (history.length === 0) { %>
+  <p class="muted">You haven't completed any exams yet.</p>
+<% } else { %>
+  <table class="data-table">
+    <thead><tr><th>Exam</th><th>Score</th><th>Result</th><th>Date</th><th></th></tr></thead>
+    <tbody>
+      <% history.forEach(h => { %>
+        <% const percent = Math.round((h.score / h.total_questions) * 100); %>
+        <tr>
+          <td><%= h.exam_title %></td>
+          <td><%= h.score %> / <%= h.total_questions %> (<%= percent %>%)</td>
+          <td><span class="badge <%= percent >= h.pass_mark_percent ? 'badge-success' : 'badge-danger' %>"><%= percent >= h.pass_mark_percent ? 'Passed' : 'Failed' %></span></td>
+          <td><%= new Date(h.submitted_at).toLocaleString() %></td>
+          <td><a href="/student/results/<%= h.id %>">View</a></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> · CBT Exam Portal</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <% if (currentUser) { %>
+    <nav class="navbar">
+      <div class="navbar-inner">
+        <a class="brand" href="<%= currentUser.role === 'admin' ? '/admin/dashboard' : '/student/dashboard' %>">CBT Exam Portal</a>
+        <div class="nav-links">
+          <% if (currentUser.role === 'admin') { %>
+            <a href="/admin/dashboard">Dashboard</a>
+            <a href="/admin/subjects">Subjects</a>
+            <a href="/admin/questions">Questions</a>
+            <a href="/admin/exams">Exams</a>
+            <a href="/admin/results">Results</a>
+          <% } else { %>
+            <a href="/student/dashboard">Dashboard</a>
+          <% } %>
+          <a href="/account/change-password">Change Password</a>
+          <span class="nav-user"><%= currentUser.name %> (<%= currentUser.role %>)</span>
+          <form action="/logout" method="POST" class="inline-form">
+            <button type="submit" class="link-button">Logout</button>
+          </form>
+        </div>
+      </div>
+    </nav>
+  <% } %>
+
+  <main class="container">
+    <% if (successMsg) { %>
+      <div class="alert alert-success"><%= successMsg %></div>
+    <% } %>
+    <% if (errorMsg) { %>
+      <div class="alert alert-error"><%= errorMsg %></div>
+    <% } %>
+    <%- body %>
+  </main>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<h1>Results</h1>
+
+<form method="GET" action="/admin/results" class="filter-form">
+  <label for="exam_id">Filter by exam</label>
+  <select id="exam_id" name="exam_id" onchange="this.form.submit()">
+    <option value="">All exams</option>
+    <% exams.forEach(e => { %>
+      <option value="<%= e.id %>" <%= String(examFilter) === String(e.id) ? 'selected' : '' %>><%= e.title %></option>
+    <% }) %>
+  </select>
+</form>
+
+<% if (attempts.length === 0) { %>
+  <p class="muted">No attempts found.</p>
+<% } else { %>
+  <table class="data-table">
+    <thead><tr><th>Student</th><th>Exam</th><th>Score</th><th>Status</th><th>Started</th><th></th></tr></thead>
+    <tbody>
+      <% attempts.forEach(a => { %>
+        <tr>
+          <td><%= a.student_name %><br /><span class="muted small"><%= a.student_email %></span></td>
+          <td><%= a.exam_title %></td>
+          <td>
+            <% if (a.status === 'submitted') { %>
+              <%= a.score %> / <%= a.total_questions %>
+              (<%= Math.round((a.score / a.total_questions) * 100) %>%)
+            <% } else { %>
+              <span class="muted">In progress</span>
+            <% } %>
+          </td>
+          <td><span class="badge <%= a.status === 'submitted' ? 'badge-success' : 'badge-muted' %>"><%= a.status %></span></td>
+          <td><%= new Date(a.started_at).toLocaleString() %></td>
+          <td><a href="/admin/results/<%= a.id %>">View</a></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>

@@ -1,0 +1,45 @@
+<h1>Subjects</h1>
+
+<div class="two-col">
+  <div class="card">
+    <h2>Add New Subject</h2>
+    <% if (errors && errors.length) { %>
+      <div class="alert alert-error">
+        <ul><% errors.forEach(e => { %><li><%= e.msg %></li><% }) %></ul>
+      </div>
+    <% } %>
+    <form method="POST" action="/admin/subjects">
+      <label for="name">Subject Name</label>
+      <input type="text" id="name" name="name" value="<%= oldName %>" required />
+
+      <label for="description">Description (optional)</label>
+      <textarea id="description" name="description" rows="3"><%= oldDescription %></textarea>
+
+      <button type="submit" class="btn btn-primary">Add Subject</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>All Subjects</h2>
+    <% if (subjects.length === 0) { %>
+      <p class="muted">No subjects yet. Add one to get started.</p>
+    <% } else { %>
+      <table class="data-table">
+        <thead><tr><th>Name</th><th>Questions</th><th></th></tr></thead>
+        <tbody>
+          <% subjects.forEach(s => { %>
+            <tr>
+              <td><%= s.name %><% if (s.description) { %><br /><span class="muted small"><%= s.description %></span><% } %></td>
+              <td><%= s.question_count %></td>
+              <td>
+                <form method="POST" action="/admin/subjects/<%= s.id %>/delete" class="inline-form" onsubmit="return confirm('Delete this subject and all its questions?');">
+                  <button type="submit" class="link-button danger">Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+</div>

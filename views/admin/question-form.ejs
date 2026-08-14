@@ -1,0 +1,64 @@
+<h1><%= question ? 'Edit Question' : 'Add Question' %></h1>
+
+<% if (errors && errors.length) { %>
+  <div class="alert alert-error">
+    <ul><% errors.forEach(e => { %><li><%= e.msg %></li><% }) %></ul>
+  </div>
+<% } %>
+
+<%
+  const val = (field, fallback) => {
+    if (old && old[field] !== undefined) return old[field];
+    if (question && question[field] !== undefined) return question[field];
+    return fallback || '';
+  };
+  const correctVal = val('correct_option', '');
+%>
+
+<div class="card">
+  <form method="POST" action="<%= question ? '/admin/questions/' + question.id + '/edit' : '/admin/questions' %>">
+    <label for="subject_id">Subject</label>
+    <select id="subject_id" name="subject_id" required>
+      <option value="">-- Select subject --</option>
+      <% subjects.forEach(s => { %>
+        <option value="<%= s.id %>" <%= String(val('subject_id')) === String(s.id) ? 'selected' : '' %>><%= s.name %></option>
+      <% }) %>
+    </select>
+
+    <label for="question_text">Question</label>
+    <textarea id="question_text" name="question_text" rows="3" required><%= val('question_text') %></textarea>
+
+    <div class="option-grid">
+      <div>
+        <label for="option_a">Option A</label>
+        <input type="text" id="option_a" name="option_a" value="<%= val('option_a') %>" required />
+      </div>
+      <div>
+        <label for="option_b">Option B</label>
+        <input type="text" id="option_b" name="option_b" value="<%= val('option_b') %>" required />
+      </div>
+      <div>
+        <label for="option_c">Option C</label>
+        <input type="text" id="option_c" name="option_c" value="<%= val('option_c') %>" required />
+      </div>
+      <div>
+        <label for="option_d">Option D</label>
+        <input type="text" id="option_d" name="option_d" value="<%= val('option_d') %>" required />
+      </div>
+    </div>
+
+    <label for="correct_option">Correct Option</label>
+    <select id="correct_option" name="correct_option" required>
+      <option value="">-- Select correct option --</option>
+      <option value="A" <%= correctVal === 'A' ? 'selected' : '' %>>A</option>
+      <option value="B" <%= correctVal === 'B' ? 'selected' : '' %>>B</option>
+      <option value="C" <%= correctVal === 'C' ? 'selected' : '' %>>C</option>
+      <option value="D" <%= correctVal === 'D' ? 'selected' : '' %>>D</option>
+    </select>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary"><%= question ? 'Save Changes' : 'Add Question' %></button>
+      <a class="btn" href="/admin/questions">Cancel</a>
+    </div>
+  </form>
+</div>

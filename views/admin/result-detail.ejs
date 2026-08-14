@@ -1,0 +1,33 @@
+<a href="/admin/results">&larr; Back to Results</a>
+
+<h1><%= attempt.exam_title %></h1>
+<p class="muted">
+  Student: <strong><%= attempt.student_name %></strong> (<%= attempt.student_email %>)<br />
+  Score: <strong><%= attempt.score %> / <%= attempt.total_questions %></strong>
+  (<%= Math.round((attempt.score / attempt.total_questions) * 100) %>%) &middot;
+  Pass mark: <%= attempt.pass_mark_percent %>%
+  &middot;
+  <% if (Math.round((attempt.score / attempt.total_questions) * 100) >= attempt.pass_mark_percent) { %>
+    <span class="badge badge-success">Passed</span>
+  <% } else { %>
+    <span class="badge badge-danger">Failed</span>
+  <% } %>
+</p>
+
+<div class="question-review">
+  <% answers.forEach((a, idx) => { %>
+    <div class="review-item <%= a.is_correct ? 'correct' : 'incorrect' %>">
+      <p class="review-question"><strong>Q<%= idx + 1 %>.</strong> <%= a.question_text %></p>
+      <ul class="review-options">
+        <% ['A','B','C','D'].forEach(opt => { %>
+          <li class="<%= opt === a.correct_option ? 'is-correct' : '' %> <%= opt === a.selected_option && opt !== a.correct_option ? 'is-wrong' : '' %>">
+            <%= opt %>. <%= a['option_' + opt.toLowerCase()] %>
+            <% if (opt === a.correct_option) { %> ✓ Correct Answer<% } %>
+            <% if (opt === a.selected_option && opt !== a.correct_option) { %> ✗ Student's Answer<% } %>
+          </li>
+        <% }) %>
+      </ul>
+      <% if (!a.selected_option) { %><p class="muted small">No answer submitted for this question.</p><% } %>
+    </div>
+  <% }) %>
+</div>

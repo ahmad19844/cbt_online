@@ -1,0 +1,39 @@
+<div class="exam-header">
+  <h1><%= attempt.exam_title %></h1>
+  <div class="timer" id="timer">--:--</div>
+</div>
+
+<p class="muted">Answer all questions. Your answers are saved automatically as you select them. The exam will auto-submit when time runs out.</p>
+
+<form id="examForm" method="POST" action="/student/attempts/<%= attempt.id %>/submit">
+  <% questions.forEach((q, idx) => { %>
+    <div class="card question-card">
+      <p class="question-number">Question <%= idx + 1 %> of <%= questions.length %></p>
+      <p class="question-text"><%= q.question_text %></p>
+      <div class="option-list" data-attempt-question-id="<%= q.attempt_question_id %>">
+        <% ['A','B','C','D'].forEach(opt => { %>
+          <label class="option-label">
+            <input
+              type="radio"
+              name="q_<%= q.attempt_question_id %>"
+              value="<%= opt %>"
+              class="answer-input"
+              data-attempt-question-id="<%= q.attempt_question_id %>"
+              <%= q.selected_option === opt ? 'checked' : '' %>
+            />
+            <span><strong><%= opt %>.</strong> <%= q['option_' + opt.toLowerCase()] %></span>
+          </label>
+        <% }) %>
+      </div>
+    </div>
+  <% }) %>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary btn-large">Submit Exam</button>
+  </div>
+</form>
+
+<script>
+  window.EXAM_SECONDS_REMAINING = <%= secondsRemaining %>;
+</script>
+<script src="/js/exam.js"></script>

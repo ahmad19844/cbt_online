@@ -1,0 +1,27 @@
+<div class="result-summary card">
+  <h1><%= attempt.exam_title %></h1>
+  <p class="result-score"><%= attempt.score %> / <%= attempt.total_questions %></p>
+  <p class="result-percent"><%= percent %>%</p>
+  <p><span class="badge <%= passed ? 'badge-success' : 'badge-danger' %> badge-large"><%= passed ? 'PASSED' : 'FAILED' %></span></p>
+  <p class="muted">Pass mark: <%= attempt.pass_mark_percent %>% &middot; Submitted <%= new Date(attempt.submitted_at).toLocaleString() %></p>
+  <a class="btn" href="/student/dashboard">Back to Dashboard</a>
+</div>
+
+<h2>Answer Review</h2>
+<div class="question-review">
+  <% answers.forEach((a, idx) => { %>
+    <div class="review-item <%= a.is_correct ? 'correct' : 'incorrect' %>">
+      <p class="review-question"><strong>Q<%= idx + 1 %>.</strong> <%= a.question_text %></p>
+      <ul class="review-options">
+        <% ['A','B','C','D'].forEach(opt => { %>
+          <li class="<%= opt === a.correct_option ? 'is-correct' : '' %> <%= opt === a.selected_option && opt !== a.correct_option ? 'is-wrong' : '' %>">
+            <%= opt %>. <%= a['option_' + opt.toLowerCase()] %>
+            <% if (opt === a.correct_option) { %> ✓ Correct Answer<% } %>
+            <% if (opt === a.selected_option && opt !== a.correct_option) { %> ✗ Your Answer<% } %>
+          </li>
+        <% }) %>
+      </ul>
+      <% if (!a.selected_option) { %><p class="muted small">You did not answer this question.</p><% } %>
+    </div>
+  <% }) %>
+</div>

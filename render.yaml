@@ -1,0 +1,42 @@
+databases:
+  - name: cbt-exam-db
+    plan: free
+    databaseName: cbt_exam
+    user: cbt_exam_user
+
+services:
+  - type: web
+    name: cbt-exam-app
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run migrate && npm run seed
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cbt-exam-db
+          property: connectionString
+      - key: DB_SSL
+        value: "true"
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: DEFAULT_ADMIN_NAME
+        value: Super Admin
+      - key: DEFAULT_ADMIN_EMAIL
+        value: admin@example.com
+      - key: DEFAULT_ADMIN_PASSWORD
+        value: Admin@12345
+      # Optional: fill these in (or leave blank) to enable "forgot password" emails.
+      # Without them, reset links are shown on-screen instead of emailed.
+      - key: SMTP_HOST
+        value: ""
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        value: ""
+      - key: SMTP_PASS
+        value: ""
+      - key: SMTP_FROM
+        value: "noreply@example.com"

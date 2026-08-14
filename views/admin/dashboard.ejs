@@ -1,0 +1,38 @@
+<h1>Admin Dashboard</h1>
+
+<div class="stat-grid">
+  <div class="stat-card"><span class="stat-number"><%= stats.subjects %></span><span class="stat-label">Subjects</span></div>
+  <div class="stat-card"><span class="stat-number"><%= stats.questions %></span><span class="stat-label">Questions</span></div>
+  <div class="stat-card"><span class="stat-number"><%= stats.exams %></span><span class="stat-label">Exams</span></div>
+  <div class="stat-card"><span class="stat-number"><%= stats.students %></span><span class="stat-label">Students</span></div>
+  <div class="stat-card"><span class="stat-number"><%= stats.attempts %></span><span class="stat-label">Attempts Completed</span></div>
+</div>
+
+<div class="quick-links">
+  <a class="btn btn-primary" href="/admin/subjects">Manage Subjects</a>
+  <a class="btn btn-primary" href="/admin/questions/new">Add Question</a>
+  <a class="btn btn-primary" href="/admin/exams/new">Create Exam</a>
+  <a class="btn" href="/admin/results">View All Results</a>
+</div>
+
+<h2>Recent Submissions</h2>
+<% if (recentAttempts.length === 0) { %>
+  <p class="muted">No exam submissions yet.</p>
+<% } else { %>
+  <table class="data-table">
+    <thead>
+      <tr><th>Student</th><th>Exam</th><th>Score</th><th>Submitted</th><th></th></tr>
+    </thead>
+    <tbody>
+      <% recentAttempts.forEach(a => { %>
+        <tr>
+          <td><%= a.student_name %></td>
+          <td><%= a.exam_title %></td>
+          <td><%= a.score %> / <%= a.total_questions %></td>
+          <td><%= new Date(a.submitted_at).toLocaleString() %></td>
+          <td><a href="/admin/results/<%= a.id %>">View</a></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>

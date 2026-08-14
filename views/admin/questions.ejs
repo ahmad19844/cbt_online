@@ -1,0 +1,37 @@
+<div class="page-header">
+  <h1>Questions</h1>
+  <a class="btn btn-primary" href="/admin/questions/new">+ Add Question</a>
+</div>
+
+<form method="GET" action="/admin/questions" class="filter-form">
+  <label for="subject_id">Filter by subject</label>
+  <select id="subject_id" name="subject_id" onchange="this.form.submit()">
+    <option value="">All subjects</option>
+    <% subjects.forEach(s => { %>
+      <option value="<%= s.id %>" <%= String(subjectFilter) === String(s.id) ? 'selected' : '' %>><%= s.name %></option>
+    <% }) %>
+  </select>
+</form>
+
+<% if (questions.length === 0) { %>
+  <p class="muted">No questions found.</p>
+<% } else { %>
+  <table class="data-table">
+    <thead><tr><th>Question</th><th>Subject</th><th>Correct</th><th></th></tr></thead>
+    <tbody>
+      <% questions.forEach(q => { %>
+        <tr>
+          <td><%= q.question_text.length > 90 ? q.question_text.slice(0, 90) + '…' : q.question_text %></td>
+          <td><%= q.subject_name %></td>
+          <td><span class="badge"><%= q.correct_option %></span></td>
+          <td class="actions">
+            <a href="/admin/questions/<%= q.id %>/edit">Edit</a>
+            <form method="POST" action="/admin/questions/<%= q.id %>/delete" class="inline-form" onsubmit="return confirm('Delete this question?');">
+              <button type="submit" class="link-button danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>

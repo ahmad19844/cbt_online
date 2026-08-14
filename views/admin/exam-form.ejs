@@ -1,0 +1,50 @@
+<h1>Create Exam</h1>
+
+<% if (errors && errors.length) { %>
+  <div class="alert alert-error">
+    <ul><% errors.forEach(e => { %><li><%= e.msg %></li><% }) %></ul>
+  </div>
+<% } %>
+
+<% if (subjects.length === 0) { %>
+  <p class="muted">You need to create a subject with questions before you can build an exam. <a href="/admin/subjects">Add a subject</a>.</p>
+<% } else { %>
+  <div class="card">
+    <form method="POST" action="/admin/exams">
+      <label for="title">Exam Title</label>
+      <input type="text" id="title" name="title" value="<%= old.title || '' %>" required />
+
+      <label for="subject_id">Subject</label>
+      <select id="subject_id" name="subject_id" required>
+        <option value="">-- Select subject --</option>
+        <% subjects.forEach(s => { %>
+          <option value="<%= s.id %>" <%= String(old.subject_id) === String(s.id) ? 'selected' : '' %>>
+            <%= s.name %> (<%= s.question_count %> questions available)
+          </option>
+        <% }) %>
+      </select>
+
+      <div class="option-grid three">
+        <div>
+          <label for="duration_minutes">Duration (minutes)</label>
+          <input type="number" id="duration_minutes" name="duration_minutes" min="1" value="<%= old.duration_minutes || 30 %>" required />
+        </div>
+        <div>
+          <label for="num_questions">Number of Questions</label>
+          <input type="number" id="num_questions" name="num_questions" min="1" value="<%= old.num_questions || 20 %>" required />
+        </div>
+        <div>
+          <label for="pass_mark_percent">Pass Mark (%)</label>
+          <input type="number" id="pass_mark_percent" name="pass_mark_percent" min="0" max="100" value="<%= old.pass_mark_percent || 50 %>" required />
+        </div>
+      </div>
+
+      <p class="muted small">Questions are randomly selected from the chosen subject's question pool each time a student starts this exam.</p>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Create Exam</button>
+        <a class="btn" href="/admin/exams">Cancel</a>
+      </div>
+    </form>
+  </div>
+<% } %>
